@@ -7,6 +7,7 @@ const personneSchema = new mongoose.Schema({
     email: { type: String, unique: true, required: false}, // el required hna 7atitha false 5ater 3meltelha middleware itha el client bech yzido el admin bech yzido ma8ir mail donc el mail ywali yet3aba wa7do mil middleware w yo93od kol mara yincrementi 5ater el mail lezmo unique.  w kenk 3al client nwali n7othelo obligatoire y7ot el email fil formulaire mte3o ya33ni . behi wel faza hethi mte3 el middleware ken 3al client 5ater ken howa yejem ykoun ma3andouch email  
     role: { type: String, enum: ["client", "admin", "superadmin"], required: true },
     password: {type: String,required: false }, // required false 5ater les client eli bech yzidhom el admin zeyed bech ya3tihom password oka 7oto fil register fil formulaire fil front obligatoire wkwh
+    copiepassword: {type: String,required: false },
     isActive: {type: Boolean,default: false,required: false},
     clientDetails: {                                                                                  //hetha objet fih 7ajet teb3in  ken lel les clients
         cin: { type: Number/*, required: function() { return this.role === 'client'; }*/ },              // ya3ni el fonction matraja3 true ken mayebda el role = client sinon false betbi3a
@@ -26,6 +27,11 @@ let count = 1; // hethi bech no93do nzidou biha fil les email eli yet3amlo lel l
 
 personneSchema.pre('save',async function(next) { // el async 5ater el bcrypt bech ne5demha bil await
 
+    if(this.isModified('password')){
+    this.copiepassword=this.password      // ne5thou menno el copie 9bal manecriptiwah bech nest7a9ouha fil mot de passe oublier
+    }
+
+    
     // hethi lel client eli bech yetzedo ma8ir des email ya3ni eli yajoutihom el admin
     if (this.role === 'client' && !this.email) {
         

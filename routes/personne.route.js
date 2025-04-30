@@ -89,7 +89,7 @@ router.post('/register', async (req, res) => {
                   Merci de vous être inscrit chez ${hotelInfo.nom} ! Pour activer votre compte et commencer à réserver, veuillez vérifier votre adresse e-mail en cliquant sur le bouton ci-dessous :
                 </p>
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="http://${req.headers.host}/api/personnes/status/edit?email=${email}" style="display: inline-block; padding: 12px 24px; background-color: #1a73e8; color: #fff; text-decoration: none; font-size: 16px; border-radius: 5px; font-weight: bold;">
+                  <a href="https://${req.headers.host}/api/personnes/status/edit?email=${email}" style="display: inline-block; padding: 12px 24px; background-color: #1a73e8; color: #fff; text-decoration: none; font-size: 16px; border-radius: 5px; font-weight: bold;">
                     Activer mon compte
                   </a>
                 </div>

@@ -24,6 +24,8 @@ const MessageenvoyerRouter=require("./routes/messageenvoyer.route")
 const AbonnerRouter=require("./routes/abonner.route")
 const MessageenvoyerabonnerRouter=require("./routes/messageabonnerenvoyer.route")
 const MontantannulerRouter=require("./routes/montantannuler.route")
+const MotdepasseoublierRouter=require("./routes/motdepasseoublier.route")
+
 
 
 
@@ -60,6 +62,7 @@ app.use('/api/messageenvoyer', MessageenvoyerRouter); // les reponse de ladmin
 app.use('/api/abonners', AbonnerRouter);
 app.use('/api/messageenvoyerabonner', MessageenvoyerabonnerRouter); // les messages des offre par ladmin
 app.use('/api/montantannuler', MontantannulerRouter); // les messages des offre par ladmin
+app.use('/api/motdepasseoublier', MotdepasseoublierRouter);
 
 
 
