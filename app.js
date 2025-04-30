@@ -2,6 +2,7 @@ const express= require('express')
 const mongoose= require('mongoose')
 const dotenv=require('dotenv')
 const cors=require('cors')
+const path = require('path'); 
 dotenv.config()
 const app=express()
 
@@ -63,7 +64,9 @@ app.use('/api/montantannuler', MontantannulerRouter); // les messages des offre 
 
 
 
-
+//dist reactjs
+app.use(express.static(path.join(__dirname, './client/build'))); // Route pourles pages non trouvées, redirige vers index.html
+app.get('*', (req, res) => { res.sendFile(path.join(__dirname,'./client/build/index.html')); });
 
 
 
