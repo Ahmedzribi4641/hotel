@@ -61,7 +61,8 @@ router.post('/register', async (req, res) => {
         const newpersonne=new Personne(req.body)
         personneexist=await Personne.findOne({email:newpersonne.email}) // bech na3raf biha el email mawjoud mn 9bal wala ya3ni
         if(personneexist) return res.status(404).send({ success: false, message: "personne already exists" })  // hetha raho aafichage bech yodhhor format json wkhw ya3 success w message ama raho mohem el succes 5ater ba3d nest7a9oulo na3mlo 3lih des condition 7asb el succes ya3ni
-        
+        const existingCin = await Personne.findOne({ 'clientDetails.cin': newpersonne.clientDetails.cin });
+        if (existingCin) {return res.status(400).json({ message: 'CIN already exists' });}
         await newpersonne.save()
 
 
