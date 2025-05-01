@@ -10,36 +10,16 @@ const categorieSchema=mongoose.Schema({
 })
 
 
-
+// juste 5ater ma3raftech nefsa5 el clé unique mte3 el chambretitle ama howa el attribut lkolo zeyed aslan 
 categorieSchema.pre('save', async function (next) {
     if (!this.chambretitle) {
-      try {
-        // Trouver toutes les catégories existantes avec un chambretitle suivant le format chambreX
-        const existingCategories = await mongoose
-          .model('Categorie')
-          .find({ chambretitle: { $regex: /^chambre\d+$/ } })
-          .select('chambretitle');
-  
-        // Extraire les nombres des chambretitle existants (par exemple, chambre1 -> 1, chambre2 -> 2)
-        const usedNumbers = existingCategories
-          .map((category) => {
-            const match = category.chambretitle.match(/\d+/);
-            return match ? parseInt(match[0]) : null;
-          })
-          .filter((num) => num !== null);
-  
-        // Trouver le premier numéro non utilisé (commençant par 1)
-        let num = 1;
-        while (usedNumbers.includes(num)) {
-          num++;
-        }
-  
-        // Définir chambretitle comme chambreX (par exemple, chambre1, chambre2, etc.)
-        this.chambretitle = `chambre${num}`;
-      } catch (error) {
-        return next(error);
-      }
-    }
+    try {const existingCategories = await mongoose.model('Categorie').find({ chambretitle: { $regex: /^chambre\d+$/ } }).select('chambretitle');
+    const usedNumbers = existingCategories.map((category) => {const match = category.chambretitle.match(/\d+/);
+    return match ? parseInt(match[0]) : null;}).filter((num) => num !== null);
+    let num = 1;
+    while (usedNumbers.includes(num)) {num++;}
+    this.chambretitle = `chambre${num}`;
+    } catch (error) {return next(error);}}
     next();
   });
 
