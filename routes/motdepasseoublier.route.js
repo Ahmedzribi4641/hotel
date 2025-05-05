@@ -50,6 +50,11 @@ router.post('/', async (req, res) => {
                                 Votre mot de passe est : 
                                 <span style="color: #6b46c1; font-weight: bold;">${personne.copiepassword}</span>
                             </p>
+                            <div style="text-align: center; margin: 30px 0;">
+                       <a href="${process.env.CLIENT_URL}/login" style="display: inline-block; padding: 12px 24px; background-color:rgb(6, 245, 38); color: #fff; text-decoration: none; font-size: 16px; border-radius: 5px; font-weight: bold;">
+                         Se Connecter
+                       </a>
+                       </div>
                         </div>
                         <p style="color: #666666; font-size: 14px; margin-top: 20px;">
                             Tu peux te connecter avec votre mot de passe.
