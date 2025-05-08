@@ -236,7 +236,7 @@ router.put('/:id',async(req,res)=>{
 
                         if (startDate < existingEnd && endDate > existingStart) {
                             return res.status(400).json({
-                                message: `Désolé, une chambre a été réservée cette modification du dates nest pas accepter.`,
+                                message: `Désolé, cette modification des dates n'est pas acceptée. Veuillez réessayer une autre fois.`,
                             });
                         }
                     }
