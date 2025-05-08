@@ -18,6 +18,17 @@ var transporter =nodemailer.createTransport({
     })
 
 
+
+// Helper function to normalize dates (set time to 00:00:00.000Z)
+const normalizeDate = (date) => {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  };
+
+
+
+
 // ********************************************************************** get all reservations ************************************
 router.get('/',async(req,res)=>{
     try{
@@ -30,11 +41,54 @@ router.get('/',async(req,res)=>{
 });
 
 
+
+
+
+
+
 // ************************************************************************* ajouter une reservation ****************************************
 router.post('/', async (req, res) => {
     let hotelInfo;
     const reservation=new Reservation(req.body)
+
     try{
+            // Check for date conflicts
+    for (const chambre of reservation.chambres) {
+        const { chambreId, dateArrive, dateSortie } = chambre;
+        if (!chambreId || !dateArrive || !dateSortie) {
+          return res.status(400).json({ message: "Données manquantes : chambreId, dateArrive ou dateSortie requis" });
+        }
+  
+        const startDate = normalizeDate(dateArrive);
+        const endDate = normalizeDate(dateSortie);
+  
+        if (startDate >= endDate) {
+          return res.status(400).json({
+            message: `Plage de dates invalide pour la chambre ${chambreId} : la date d'arrivée doit être antérieure à la date de départ`,
+          });
+        }
+  
+        const existingReservations = await Reservation.find({
+          "chambres.chambreId": chambreId,
+        });
+  
+        for (const existingReservation of existingReservations) {
+          for (const existingChambre of existingReservation.chambres) {
+            if (existingChambre.chambreId.toString() === chambreId.toString()) {
+              const existingStart = normalizeDate(existingChambre.dateArrive);
+              const existingEnd = normalizeDate(existingChambre.dateSortie);
+  
+              if (startDate < existingEnd && endDate > existingStart) {
+                return res.status(400).json({
+                  message: `La chambre est déjà réservée du ${existingStart.toLocaleDateString(
+                    "fr-FR"
+                  )} au ${existingEnd.toLocaleDateString("fr-FR")}`,
+                });
+              }
+            }
+          }
+        }
+      }
         await reservation.save()
         hotelInfo = await Information.findOne().sort({ _id: -1 }); 
          // ba3then el email dactivation  // kona nejmo ma8ir mana3mlo fonction haka 3adi ya3ni kima el version le9dima fil projet ecommerce zouz kifkif 3adi
