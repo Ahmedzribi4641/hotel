@@ -211,6 +211,39 @@ router.put('/:id',async(req,res)=>{
     try{
         const reservation = await Reservation.findById(req.params.id);
         hotelInfo = await Information.findOne().sort({ _id: -1 }); 
+
+                // Check for date conflicts before updating
+        const updatedChambres = req.body.chambres || reservation.chambres;
+        for (const chambre of updatedChambres) {
+            const { chambreId, dateArrive, dateSortie } = chambre;
+            if (!chambreId || !dateArrive || !dateSortie) {
+                return res.status(400).json({ message: "Données manquantes : chambreId, dateArrive ou dateSortie requis" });
+            }
+
+            const startDate = normalizeDate(dateArrive);
+            const endDate = normalizeDate(dateSortie);
+
+            const existingReservations = await Reservation.find({
+                _id: { $ne: req.params.id }, // Exclude the current reservation
+                "chambres.chambreId": chambreId,
+            });
+
+            for (const existingReservation of existingReservations) {
+                for (const existingChambre of existingReservation.chambres) {
+                    if (existingChambre.chambreId.toString() === chambreId.toString()) {
+                        const existingStart = normalizeDate(existingChambre.dateArrive);
+                        const existingEnd = normalizeDate(existingChambre.dateSortie);
+
+                        if (startDate < existingEnd && endDate > existingStart) {
+                            return res.status(400).json({
+                                message: `Désolé, une chambre a été réservée cette modification du dates nest pas accepter.`,
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
         Object.assign(reservation, req.body)
         await reservation.save()  // betbi3a el save hethi lezma bech el middleware yejem ye5dem 9bal el methode put
         // await reservation.populate('clientId');
