@@ -62,11 +62,11 @@ router.post('/', async (req, res) => {
         const startDate = normalizeDate(dateArrive);
         const endDate = normalizeDate(dateSortie);
   
-        if (startDate >= endDate) {
-          return res.status(400).json({
-            message: `Plage de dates invalide pour la chambre ${chambreId} : la date d'arrivée doit être antérieure à la date de départ`,
-          });
-        }
+        // if (startDate >= endDate) {
+        //   return res.status(400).json({
+        //     message: `Plage de dates invalide pour la chambre ${chambreId} : la date d'arrivée doit être antérieure à la date de départ`,
+        //   });
+        // }
   
         const existingReservations = await Reservation.find({
           "chambres.chambreId": chambreId,
@@ -80,9 +80,7 @@ router.post('/', async (req, res) => {
   
               if (startDate < existingEnd && endDate > existingStart) {
                 return res.status(400).json({
-                  message: `La chambre est déjà réservée du ${existingStart.toLocaleDateString(
-                    "fr-FR"
-                  )} au ${existingEnd.toLocaleDateString("fr-FR")}`,
+                  message: `Désolé, cette chambre a été réservée il y a quelques secondes, du  ${existingStart.toLocaleDateString("fr-FR")} au ${existingEnd.toLocaleDateString("fr-FR")} Veuillez choisir une autre date pour effectuer votre réservation.`,
                 });
               }
             }
