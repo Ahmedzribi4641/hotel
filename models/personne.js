@@ -10,7 +10,7 @@ const personneSchema = new mongoose.Schema({
     copiepassword: {type: String,required: false },
     isActive: {type: Boolean,default: false,required: false},
     clientDetails: {                                                                                  //hetha objet fih 7ajet teb3in  ken lel les clients
-        cin: { type: Number, unique: true/*, required: function() { return this.role === 'client'; }*/ },              // ya3ni el fonction matraja3 true ken mayebda el role = client sinon false betbi3a
+        cin: { type: Number, unique: true, required: function() { return this.role === 'client'; } },              // ya3ni el fonction matraja3 true ken mayebda el role = client sinon false betbi3a
         tel: { type: Number/*, required: function() { return this.role === 'client'; }*/ },
         sex: { type: String, enum: ['Homme', 'Femme']/*, required: function() { return this.role === 'client'; }*/ },
         datedenaissance: { type: Date/*,required: function() { return this.role === 'client'; }*/ },
