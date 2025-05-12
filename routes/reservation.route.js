@@ -605,7 +605,7 @@ router.delete('/:id', async (req, res)=> {
         // ba3then el email
         const sendReservationEmail = async (nom, email, reference) => {
             const mailOptions = {
-                from: `"Votre Réservation" <zribi4641@gmail.com>`,
+                from: `${hotelInfo.nom}<${hotelInfo.email}>`,
                 to: email,
                 subject: `Annulation de Réservation - ${hotelInfo.nom}`,
                 html: `
