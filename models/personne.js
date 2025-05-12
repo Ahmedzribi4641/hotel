@@ -16,7 +16,7 @@ const personneSchema = new mongoose.Schema({
         datedenaissance: { type: Date/*,required: function() { return this.role === 'client'; }*/ },
         age: { type: Number },
         avatar:{type: String},  // image avatar homme or femme
-        ajouterparadmin: {type: Boolean,default: false,required: false}
+        ajouterparadmin: {type: Boolean}
     }
 },
 {
