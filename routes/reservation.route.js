@@ -117,7 +117,7 @@ router.post('/', async (req, res) => {
             `).join('');
 
             const mailOptions = {
-                from: `"Votre Réservation"`,
+                from: `${hotelInfo.nom}<${hotelInfo.email}>`,
                 to: email,
                 subject: `Confirmation de Réservation - ${hotelInfo.nom}`,
                 html: `
@@ -277,7 +277,7 @@ router.put('/:id',async(req,res)=>{
             `).join('');
 
             const mailOptions = {
-                from: `"Votre Réservation"`,
+                from: `${hotelInfo.nom}<${hotelInfo.email}>`,
                 to: email,
                 subject: `Modifier Réservation - ${hotelInfo.nom}`,
                 html: `

@@ -36,7 +36,7 @@ router.post('/', async (req, res) => {
         }
  
             const mailOptions = {
-                from: ` ${hotelInfo.nom}<zribi4641@gmail.com>`,
+                from: `${hotelInfo.nom}<${hotelInfo.email}>`,
                 to: email,
                 subject: "Des offres spéciale",
                 html: `<div style="font-family: Arial, Helvetica, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px;">

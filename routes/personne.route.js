@@ -76,9 +76,9 @@ router.post('/register', async (req, res) => {
           console.error('Error fetching hotel information:', error);
         }
             const mailOptions = {
-                from: `"Activer Votre Compte" <zribi4641@gmail.com>`,
+                from: `${hotelInfo.nom}<${hotelInfo.email}>`,
                 to: email,
-                subject: "Vérifiez votre adresse e-mail pour activer votre compte",
+                subject: "activer votre compte",
                 html: ` <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
               <div style="text-align: center; padding: 20px 0;">
                 <h1 style="color: #1a73e8; margin: 0;">${hotelInfo.nom}</h1>

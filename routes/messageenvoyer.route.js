@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
           console.error('Error fetching hotel information:', error);
         }
             const mailOptions = {
-                from: ` ${hotelInfo.nom}<zribi4641@gmail.com>`,
+                from: `${hotelInfo.nom}<${hotelInfo.email}>`,
                 to: email,
                 subject: "Repondre a votre message",
                 html: `${message}`,

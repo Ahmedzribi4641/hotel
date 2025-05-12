@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
             }
     
             const mailOptions = {
-                from: `${hotelInfo.nom} <zribi4641@gmail.com>`,
+                from: `${hotelInfo.nom}<${hotelInfo.email}>`,
                 to: emailcl, 
                 subject: 'Votre mot de passe',
                 html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; text-align: center;">
