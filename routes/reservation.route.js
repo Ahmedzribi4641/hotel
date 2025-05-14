@@ -96,7 +96,7 @@ router.post('/', async (req, res) => {
             const roomsHtml = reservationDetails.chambres.map((chambre, index) => `
                 <div style="margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 8px; border: 1px solid #e0e0e0;">
                     <h3 style="font-size: 18px; color: #1a3c5e; margin: 0 0 10px 0;">Chambre ${index + 1} (${chambre.chambreId.categorieId.nom})</h3>
-                    <p style="margin: 5px 0; color: #333;"><strong>Nombre de nuits :</strong> ${chambre.chambreId.numero || 'N/A'}</p>
+                    <p style="margin: 5px 0; color: #333;"><strong>Numéro de la chambre :</strong> ${chambre.chambreId.numero || 'N/A'}</p>
                     <p style="margin: 5px 0; color: #333;"><strong>Date d'arrivée :</strong> ${new Date(chambre.dateArrive).toLocaleDateString('fr-FR')} après 12h00</p>
                     <p style="margin: 5px 0; color: #333;"><strong>Date de départ :</strong> ${new Date(chambre.dateSortie).toLocaleDateString('fr-FR')} avant 12h00</p>
                     <p style="margin: 5px 0; color: #333;"><strong>Nombre de nuits :</strong> ${chambre.nombreNuits || 'N/A'}</p>
@@ -261,7 +261,7 @@ router.put('/:id',async(req,res)=>{
             const roomsHtml = reservationDetails.chambres.map((chambre, index) => `
                 <div style="margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 8px; border: 1px solid #e0e0e0;">
                     <h3 style="font-size: 18px; color: #1a3c5e; margin: 0 0 10px 0;">Chambre ${index + 1} (${chambre.chambreId.categorieId.nom})</h3>
-                    <p style="margin: 5px 0; color: #333;"><strong>Nombre de nuits :</strong> ${chambre.chambreId.numero || 'N/A'}</p>
+                    <p style="margin: 5px 0; color: #333;"><strong>Numéro de la chambre :</strong> ${chambre.chambreId.numero || 'N/A'}</p>
                     <p style="margin: 5px 0; color: #333;"><strong>Date d'arrivée :</strong> ${new Date(chambre.dateArrive).toLocaleDateString('fr-FR')} après 12h00</p>
                     <p style="margin: 5px 0; color: #333;"><strong>Date de départ :</strong> ${new Date(chambre.dateSortie).toLocaleDateString('fr-FR')} avant 12h00</p>
                     <p style="margin: 5px 0; color: #333;"><strong>Nombre de nuits :</strong> ${chambre.nombreNuits || 'N/A'}</p>
