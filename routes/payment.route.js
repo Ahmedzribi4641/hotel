@@ -1,6 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const Stripe = require('stripe')('sk_test_51R1oQVHK3HkL6OFz7ULXDUVDVH0KBfhOum5CXbfb3KYxmTrRKa5iwqPKtskNTdhKhgo1PssHPbgb8n9dfwrGjVGD00HUdPe749');
+const Reservation = require('../models/reservation');
+
+
+const normalizeDate = (date) => {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+};
+
 
 router.post('/', async (req, res) => {
   try {
@@ -10,6 +19,35 @@ router.post('/', async (req, res) => {
     }
     if (!req.body.clientId) {
       return res.status(400).json({ error: 'Client ID is required' });
+    }
+    
+    for (const item of req.body.cart) {
+      const { chambreId, dateArrive, dateSortie } = item;
+      if (!chambreId || !dateArrive || !dateSortie) {
+        return res.status(400).json({ error: 'Invalid cart item: missing chambreId, dateArrive, or dateSortie' });
+      }
+
+      const startDate = normalizeDate(dateArrive);
+      const endDate = normalizeDate(dateSortie);
+
+      const existingReservations = await Reservation.find({
+        'chambres.chambreId': chambreId,
+      });
+
+      for (const existingReservation of existingReservations) {
+        for (const existingChambre of existingReservation.chambres) {
+          if (existingChambre.chambreId.toString() === chambreId.toString()) {
+            const existingStart = normalizeDate(existingChambre.dateArrive);
+            const existingEnd = normalizeDate(existingChambre.dateSortie);
+
+            if (startDate < existingEnd && endDate > existingStart) {
+              return res.status(400).json({
+                message: 'Désolé, une chambre a été réservée il y a quelques secondes. Veuillez actualiser la page des chambres et réserver à nouveau.',
+              });
+            }
+          }
+        }
+      }
     }
 
     const session = await Stripe.checkout.sessions.create({
