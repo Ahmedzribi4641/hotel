@@ -27,8 +27,8 @@ router.post('/', async (req, res) => {
         return res.status(400).json({ error: 'Invalid cart item: missing chambreId, dateArrive, or dateSortie' });
       }
 
-      const startDate = dateArrive;
-      const endDate = dateSortie;
+      const startDate = normalizeDate(dateArrive);
+      const endDate = normalizeDate(dateSortie);
 
       const existingReservations = await Reservation.find({
         'chambres.chambreId': chambreId,
@@ -37,10 +37,10 @@ router.post('/', async (req, res) => {
       for (const existingReservation of existingReservations) {
         for (const existingChambre of existingReservation.chambres) {
           if (existingChambre.chambreId.toString() === chambreId.toString()) {
-            const existingStart = existingChambre.dateArrive;
-            const existingEnd = existingChambre.dateSortie;
+            const existingStart = normalizeDate(existingChambre.dateArrive);
+            const existingEnd = normalizeDate(existingChambre.dateSortie);
 
-            if (startDate < existingEnd && endDate > existingStart) {
+            if (startDate <= existingEnd && endDate >= existingStart) {
               return res.status(400).json({
                 message: 'Désolé, une des chambres que vous avez sélectionnées a été réservée il y a quelques secondes. La date choisie n’est donc plus disponible. Veuillez actualiser la page des chambres et effectuer une nouvelle réservation.',
               });
