@@ -30,6 +30,11 @@ router.post('/', async (req, res) => {
       const startDate = normalizeDate(dateArrive);
       const endDate = normalizeDate(dateSortie);
 
+      const addjourStartDate = new Date(startDate);
+      addjourStartDate.setDate(startDate.getDate() + 1);
+      const diminuejourEndDate = new Date(endDate);
+      diminuejourEndDate.setDate(endDate.getDate() - 1);
+
       console.log(`Checking chambreId: ${chambreId}`);
       console.log(`New reservation dates: ${startDate.toISOString()} to ${endDate.toISOString()}`);
 
@@ -46,7 +51,7 @@ router.post('/', async (req, res) => {
             console.log(`Existing reservation: ${existingStart.toISOString()} to ${existingEnd.toISOString()}`);
 
             // Use the same logic as the reservation route: Allow same-day check-in
-            if (startDate < existingEnd && endDate > existingStart) {
+            if (addjourStartDate < existingEnd && diminuejourEndDate > existingStart) {
               console.log(`Conflict detected for chambreId ${chambreId} between ${startDate.toISOString()} - ${endDate.toISOString()} and existing ${existingStart.toISOString()} - ${existingEnd.toISOString()}`);
               return res.status(400).json({
                 message: 'Désolé, une des chambres que vous avez sélectionnées a été réservée il y a quelques secondes. La date choisie n’est donc plus disponible. Veuillez actualiser la page des chambres et effectuer une nouvelle réservation.',
