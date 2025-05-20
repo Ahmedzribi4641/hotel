@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
 
             if (startDate < existingEnd && endDate > existingStart) {
               return res.status(400).json({
-                message: 'Désolé, une chambre a été réservée il y a quelques secondes. Veuillez actualiser la page des chambres et réserver à nouveau.',
+                message: 'Désolé, une des chambres que vous avez sélectionnées a été réservée il y a quelques secondes. La date choisie n’est donc plus disponible. Veuillez actualiser la page des chambres et effectuer une nouvelle réservation.',
               });
             }
           }
