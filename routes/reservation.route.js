@@ -61,12 +61,7 @@ router.post('/', async (req, res) => {
   
         const startDate = normalizeDate(dateArrive);
         const endDate = normalizeDate(dateSortie);
-  
-        // if (startDate >= endDate) {
-        //   return res.status(400).json({
-        //     message: `Plage de dates invalide pour la chambre ${chambreId} : la date d'arrivée doit être antérieure à la date de départ`,
-        //   });
-        // }
+
   
         const existingReservations = await Reservation.find({
           "chambres.chambreId": chambreId,
