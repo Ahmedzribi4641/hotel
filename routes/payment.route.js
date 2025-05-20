@@ -13,7 +13,6 @@ const normalizeDate = (date) => {
 
 router.post('/', async (req, res) => {
   try {
-    // Validate cart and clientId
     if (!req.body.cart || !Array.isArray(req.body.cart) || req.body.cart.length === 0) {
       return res.status(400).json({ error: 'Cart is empty or invalid' });
     }
@@ -35,9 +34,6 @@ router.post('/', async (req, res) => {
       const diminuejourEndDate = new Date(endDate);
       diminuejourEndDate.setDate(endDate.getDate() - 1);
 
-      console.log(`Checking chambreId: ${chambreId}`);
-      console.log(`New reservation dates: ${startDate.toISOString()} to ${endDate.toISOString()}`);
-
       const existingReservations = await Reservation.find({
         'chambres.chambreId': chambreId,
       });
@@ -47,18 +43,11 @@ router.post('/', async (req, res) => {
           if (existingChambre.chambreId.toString() === chambreId.toString()) {
             const existingStart = normalizeDate(existingChambre.dateArrive);
             const existingEnd = normalizeDate(existingChambre.dateSortie);
-
-            console.log(`Existing reservation: ${existingStart.toISOString()} to ${existingEnd.toISOString()}`);
-
-            // Use the same logic as the reservation route: Allow same-day check-in
             if (addjourStartDate < existingEnd && diminuejourEndDate > existingStart) {
-              console.log(`Conflict detected for chambreId ${chambreId} between ${startDate.toISOString()} - ${endDate.toISOString()} and existing ${existingStart.toISOString()} - ${existingEnd.toISOString()}`);
               return res.status(400).json({
                 message: 'Désolé, une des chambres que vous avez sélectionnées a été réservée il y a quelques secondes. La date choisie n’est donc plus disponible. Veuillez actualiser la page des chambres et effectuer une nouvelle réservation.',
               });
-            } else {
-              console.log(`No conflict for chambreId ${chambreId} with existing reservation ${existingStart.toISOString()} - ${existingEnd.toISOString()}`);
-            }
+            } 
           }
         }
       }
