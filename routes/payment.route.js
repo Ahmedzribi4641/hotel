@@ -27,8 +27,8 @@ router.post('/', async (req, res) => {
         return res.status(400).json({ error: 'Invalid cart item: missing chambreId, dateArrive, or dateSortie' });
       }
 
-      const startDate = normalizeDate(dateArrive);
-      const endDate = normalizeDate(dateSortie);
+      const startDate = dateArrive;
+      const endDate = dateSortie;
 
       const existingReservations = await Reservation.find({
         'chambres.chambreId': chambreId,
