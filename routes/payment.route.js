@@ -56,26 +56,60 @@ router.post('/', async (req, res) => {
     const session = await Stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
-      line_items: req.body.cart.map(item => {
-        if (!item.nomcat || !item.prix || isNaN(item.prix)) {
-          throw new Error(`Invalid cart item: ${JSON.stringify(item)}`);
+      line_items: req.body.cart.flatMap(item => {
+
+        const { nomcat, prix, nombreNuits, nombreAdulte, nombreEnfant = 0, litbebe = 0, services = [], room } = item;
+
+        let prixAdulte = prix;
+        let prixEnfant = prix * 0.5;
+        
+        if (room.promotion > 0 && room.montantReduction) {
+        prixAdulte -= room.montantReduction;
+        prixEnfant = prixAdulte * 0.5; 
         }
-        return {
+
+        if (room.nbrnuitpromotion > 0 && nombreNuits >= room.nbrnuitpromotion && room.montantReductionNuit > 0) {
+        prixAdulte -= room.montantReductionNuit;
+        prixEnfant -= room.montantReductionNuit / 2;
+        }
+
+        const adultTotal = prixAdulte * nombreAdulte * nombreNuits;
+        const enfantTotal = prixEnfant * nombreEnfant * nombreNuits;
+        const totalRoomPrice = adultTotal + enfantTotal;
+
+        const roomLineItem = {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: item.nomcat || 'Chambre',
+              name: `${nomcat} - ${nombreNuits} nuit${nombreNuits > 1 ? 's' : ''} (${nombreAdulte} adulte${nombreAdulte > 1 ? 's' : ''}${nombreEnfant > 0 ? `, ${nombreEnfant} enfant${nombreEnfant > 1 ? 's' : ''}` : ''}${litbebe > 0 ? `, ${litbebe} bébé${litbebe > 1 ? 's' : ''}` : ''})`,
             },
-            unit_amount: Math.round(item.prix * 100 * 0.32),
+            unit_amount: Math.round(totalRoomPrice * 100 * 0.32), 
           },
-          quantity: item.nombreNuits || 1,
+          quantity: 1,
         };
+
+        const serviceLineItems = services.map(service => {
+          if (!service.nom || !service.prix || !service.quantite) {
+            throw new Error(`Invalid service: ${JSON.stringify(service)}`);
+          }
+          return {
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: `Service : ${service.nom}`,
+              },
+              unit_amount: Math.round(service.prix * 100 * 0.32), 
+            },
+            quantity: service.quantite,
+          };
+        });
+
+        return [roomLineItem, ...serviceLineItems];
       }),
-      success_url: `${process.env.CLIENT_URL}success?clientId=${req.body.clientId}&paymentMethod=${encodeURIComponent(req.body.paymentMethod)}`,
+      success_url: `${process.env.CLIENT_URL}success?clientId=${req.body.clientId}`,
       cancel_url: `${process.env.CLIENT_URL}cancel`,
       metadata: {
         clientId: req.body.clientId,
-        paymentMethod: req.body.paymentMethod,
       },
     });
 

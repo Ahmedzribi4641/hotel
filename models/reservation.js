@@ -40,7 +40,8 @@ const reservationSchema=mongoose.Schema({
     montantTotalReservation: { type: Number,required:false},
     modePaiement: { type: String, required: true, enum: ["en ligne", "à l'hôtel"]},
     nombreTotalAdulte: { type: Number,required:false},
-    nombreTotalEnfant: { type: Number,required:false}
+    nombreTotalEnfant: { type: Number,required:false},
+    nombreTotalbebe: { type: Number,required:false}
 },
 {
     timestamps: true, // ya3tini les dates dajout wel modification
@@ -75,6 +76,7 @@ reservationSchema.pre('save', async function(next) {
     let totalChambres= 0; //fiha el somme mte3 les chambre ma8ir services ya3ni
     let nbrenfant= 0;
     let nbradult= 0;
+    let nbrbebe= 0;
 
   // declarina ken el 3 hethom 5ater lo5rin eli fil les tableau tbadelhom el foreach fi kol objet mawjoudin heka 3leh donc kol wa7da wel valeur mte3ha fil table
   await this.populate('chambres.chambreId');
@@ -130,6 +132,7 @@ reservationSchema.pre('save', async function(next) {
     totalServices += montantserviceparchambre; // w hetha montant les service lel reservation kemla
     nbrenfant+=chambre.nombreEnfant;
     nbradult+=chambre.nombreAdulte;
+    nbrbebe+=chambre.litbebe;
 });
 
 
@@ -142,6 +145,8 @@ reservationSchema.pre('save', async function(next) {
         this.montantTotalReservation = totalChambres + totalServices;
         this.nombreTotalAdulte=nbradult;
         this.nombreTotalEnfant=nbrenfant;
+        this.nombreTotalbebe=nbrbebe;
+
     }
 
     next();

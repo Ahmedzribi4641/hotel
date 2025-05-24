@@ -97,10 +97,10 @@ router.post('/', async (req, res) => {
                     <p style="margin: 5px 0; color: #333;"><strong>Nombre de nuits :</strong> ${chambre.nombreNuits || 'N/A'}</p>
                     <p style="margin: 5px 0; color: #333;"><strong>Nombre d'adultes :</strong> ${chambre.nombreAdulte}</p>
                     <p style="margin: 5px 0; color: #333;"><strong>Nombre d'enfants :</strong> ${chambre.nombreEnfant}</p>
-                    <p style="margin: 5px 0; color: #333;"><strong>Lit bébé :</strong> ${chambre.litbebe || 0}</p>
+                    <p style="margin: 5px 0; color: #333;"><strong>Nombre de bébés :</strong> ${chambre.litbebe || 0}</p>
                     ${chambre.services && chambre.services.length > 0 ? `
                         <p style="margin: 5px 0; color: #333;"><strong>Services :</strong></p>
-                        <ul style="margin: 5px 0 10px 20px; padding: 0; color: #555;">
+                        <ul style="margin: 5px 0 10px 20px; padding: 0; color: #333;">
                             ${chambre.services.map(service => `
                                 <li style="margin-bottom: 5px;">${service.serviceId.nom} => Quantité : ${service.quantite}, Montant : ${service.montantService} DT</li>
                             `).join('')}
@@ -129,6 +129,7 @@ router.post('/', async (req, res) => {
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total de chambres :</strong> ${reservationDetails.nombreTotalChambres}</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total d'adultes :</strong> ${reservationDetails.nombreTotalAdulte || 0}</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total d'enfants :</strong> ${reservationDetails.nombreTotalEnfant || 0}</p>
+                            <p style="margin: 8px 0; color: #333;"><strong>Nombre total de bébés :</strong> ${reservationDetails.nombreTotalbebe || 0}</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Coût total des services :</strong> ${reservationDetails.montantTotalServices || 0} DT</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Coût total des chambres :</strong> ${reservationDetails.montantTotalChambre || 0} DT</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Montant total de la réservation :</strong> ${reservationDetails.montantTotalReservation} DT <span style="color: #d32f2f;">(Non remboursable)</span></p>
@@ -180,7 +181,7 @@ router.post('/', async (req, res) => {
         });
         // hetha el star howa eli bech ya3ml el ba3then
         if (reservation.clientId.email.includes("@gmail.com")) {
-        await sendReservationEmail(reservation.clientId.nom,reservation.clientId.email,reservation.reference, {chambres: reservation.chambres,nombreTotalChambres: reservation.nombreTotalChambres,nombreTotalAdulte: reservation.nombreTotalAdulte,nombreTotalEnfant: reservation.nombreTotalEnfant,montantTotalServices: reservation.montantTotalServices,montantTotalChambre: reservation.montantTotalChambre,montantTotalReservation: reservation.montantTotalReservation,modePaiement: reservation.modePaiement}); // hetha ta5dim el fonction ya3ni w kona nejmo ne5dmouha kima fil formation wkhw ma8ir el star hetha ya3ni // les variable eli bech nab3athhom ya3ni lel fonction bech yet7ato fil email wel nom eli te5ouhom el fonction
+        await sendReservationEmail(reservation.clientId.nom,reservation.clientId.email,reservation.reference, {chambres: reservation.chambres,nombreTotalChambres: reservation.nombreTotalChambres,nombreTotalAdulte: reservation.nombreTotalAdulte,nombreTotalEnfant: reservation.nombreTotalEnfant,nombreTotalbebe: reservation.nombreTotalbebe,montantTotalServices: reservation.montantTotalServices,montantTotalChambre: reservation.montantTotalChambre,montantTotalReservation: reservation.montantTotalReservation,modePaiement: reservation.modePaiement}); // hetha ta5dim el fonction ya3ni w kona nejmo ne5dmouha kima fil formation wkhw ma8ir el star hetha ya3ni // les variable eli bech nab3athhom ya3ni lel fonction bech yet7ato fil email wel nom eli te5ouhom el fonction
     } else {
         console.log("E-mail non Gmail détecté, pas d'envoi.");
         }
@@ -262,7 +263,7 @@ router.put('/:id',async(req,res)=>{
                     <p style="margin: 5px 0; color: #333;"><strong>Nombre de nuits :</strong> ${chambre.nombreNuits || 'N/A'}</p>
                     <p style="margin: 5px 0; color: #333;"><strong>Nombre d'adultes :</strong> ${chambre.nombreAdulte}</p>
                     <p style="margin: 5px 0; color: #333;"><strong>Nombre d'enfants :</strong> ${chambre.nombreEnfant}</p>
-                    <p style="margin: 5px 0; color: #333;"><strong>Lit bébé :</strong> ${chambre.litbebe || 0}</p>
+                    <p style="margin: 5px 0; color: #333;"><strong>Nombre de bébés :</strong> ${chambre.litbebe || 0}</p>
                     ${chambre.services && chambre.services.length > 0 ? `
                         <p style="margin: 5px 0; color: #333;"><strong>Services :</strong></p>
                         <ul style="margin: 5px 0 10px 20px; padding: 0; color: #555;">
@@ -294,6 +295,7 @@ router.put('/:id',async(req,res)=>{
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total de chambres :</strong> ${reservationDetails.nombreTotalChambres}</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total d'adultes :</strong> ${reservationDetails.nombreTotalAdulte || 0}</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total d'enfants :</strong> ${reservationDetails.nombreTotalEnfant || 0}</p>
+                            <p style="margin: 8px 0; color: #333;"><strong>Nombre total de bébés :</strong> ${reservationDetails.nombreTotalbebe || 0}</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Coût total des services :</strong> ${reservationDetails.montantTotalServices || 0} DT</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Coût total des chambres :</strong> ${reservationDetails.montantTotalChambre || 0} DT</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Montant total de la réservation :</strong> ${reservationDetails.montantTotalReservation} DT <span style="color: #d32f2f;">(Non remboursable)</span></p>
@@ -345,7 +347,7 @@ router.put('/:id',async(req,res)=>{
         });
         // hetha el star howa eli bech ya3ml el ba3then
         if (reservation.clientId?.email?.includes('@gmail.com')) {
-        await sendReservationEmail(reservation.clientId.nom,reservation.clientId.email,reservation.reference, {chambres: reservation.chambres,nombreTotalChambres: reservation.nombreTotalChambres,nombreTotalAdulte: reservation.nombreTotalAdulte,nombreTotalEnfant: reservation.nombreTotalEnfant,montantTotalServices: reservation.montantTotalServices,montantTotalChambre: reservation.montantTotalChambre,montantTotalReservation: reservation.montantTotalReservation,modePaiement: reservation.modePaiement}); // hetha ta5dim el fonction ya3ni w kona nejmo ne5dmouha kima fil formation wkhw ma8ir el star hetha ya3ni // les variable eli bech nab3athhom ya3ni lel fonction bech yet7ato fil email wel nom eli te5ouhom el fonction
+        await sendReservationEmail(reservation.clientId.nom,reservation.clientId.email,reservation.reference, {chambres: reservation.chambres,nombreTotalChambres: reservation.nombreTotalChambres,nombreTotalAdulte: reservation.nombreTotalAdulte,nombreTotalEnfant: reservation.nombreTotalEnfant,nombreTotalbebe: reservation.nombreTotalbebe,montantTotalServices: reservation.montantTotalServices,montantTotalChambre: reservation.montantTotalChambre,montantTotalReservation: reservation.montantTotalReservation,modePaiement: reservation.modePaiement}); // hetha ta5dim el fonction ya3ni w kona nejmo ne5dmouha kima fil formation wkhw ma8ir el star hetha ya3ni // les variable eli bech nab3athhom ya3ni lel fonction bech yet7ato fil email wel nom eli te5ouhom el fonction
     } else {
         console.log("E-mail non Gmail détecté, pas d'envoi.");
         }
