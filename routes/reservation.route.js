@@ -119,7 +119,7 @@ router.post('/', async (req, res) => {
                 html: `
                     <div style="font-family: Arial, sans-serif; max-width: 650px; margin: 20px auto; border: 2px solid #d4af37; border-radius: 10px; padding: 25px; background-color: #ffffff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                         <div style="text-align: center; background-color: #1a3c5e; padding: 15px; border-radius: 8px 8px 0 0; border-bottom: 3px solid #d4af37;">
-                            <h1 style="margin: 0; font-size: 28px; color: #ffffff; font-weight: bold;">Bon de Réservation d'Hôtel</h1>
+                            <h1 style="margin: 0; font-size: 28px; color: #ffffff; font-weight: bold;">Bon de Réservation</h1>
                             <p style="margin: 5px 0; font-size: 16px; color: #d4af37;">${hotelInfo.nom}</p>
                         </div>
                         <div style="margin-top: 25px;">
@@ -281,11 +281,11 @@ router.put('/:id',async(req,res)=>{
             const mailOptions = {
                 from: `${hotelInfo.nom}<${hotelInfo.email}>`,
                 to: email,
-                subject: `Modifier Réservation - ${hotelInfo.nom}`,
+                subject: `Modification de Réservation - ${hotelInfo.nom}`,
                 html: `
                     <div style="font-family: Arial, sans-serif; max-width: 650px; margin: 20px auto; border: 2px solid #d4af37; border-radius: 10px; padding: 25px; background-color: #ffffff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                         <div style="text-align: center; background-color: #1a3c5e; padding: 15px; border-radius: 8px 8px 0 0; border-bottom: 3px solid #d4af37;">
-                            <h1 style="margin: 0; font-size: 28px; color: #ffffff; font-weight: bold;">Bon de Réservation d'Hôtel (Modifier)</h1>
+                            <h1 style="margin: 0; font-size: 28px; color: #ffffff; font-weight: bold;">Bon de modification de Réservation</h1>
                             <p style="margin: 5px 0; font-size: 16px; color: #d4af37;">${hotelInfo.nom}</p>
                         </div>
                         <div style="margin-top: 25px;">
@@ -314,7 +314,7 @@ router.put('/:id',async(req,res)=>{
                             <p style="margin: 8px 0; color: #333;"><strong>Email :</strong> <a href=${hotelInfo.email} style="color: #1a3c5e; text-decoration: none;">${hotelInfo.email}</a></p>
                         </div>
                         <div style="margin-top: 25px; font-size: 13px; color: #555; background-color: #f0f4f8; padding: 15px; border-radius: 8px;">
-                            <p style="margin: 0 0 10px 0; color: #1a3c5e;">  <strong>Note au client :</strong> Ce bon de réservation doit être présenté à votre arrivée pour accéder à l'hôtel.</p>
+                            <p style="margin: 0 0 10px 0; color: #1a3c5e;">  <strong>Note au client :</strong> Ce bon de modification de réservation doit être présenté à votre arrivée pour accéder à l'hôtel. Il est également requis de présenter le bon correspondant à la réservation initiale, avant modification, pour le traitement comptable du montant à régler.</p>
                             <p style="margin: 0 0 10px 0; color: #1a3c5e;"><strong>Attention au client :</strong></p>
                             <ul style="margin: 0; padding: 0 0 0 20px;">
                                 <li style="margin-bottom: 5px;">Le client doit s'assurer des détails de réservation corrects lors de l'enregistrement.</li>
