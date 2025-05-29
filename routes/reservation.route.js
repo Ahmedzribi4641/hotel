@@ -130,10 +130,10 @@ router.post('/', async (req, res) => {
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total d'adultes :</strong> ${reservationDetails.nombreTotalAdulte || 0}</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total d'enfants :</strong> ${reservationDetails.nombreTotalEnfant || 0}</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total de bébés :</strong> ${reservationDetails.nombreTotalbebe || 0}</p>
-                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des services (HT) :</strong> ${reservationDetails.montantTotalServices * 0.93 || 0} DT</p>
-                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des chambres (HT) :</strong> ${reservationDetails.montantTotalChambre * 0.93 || 0} DT</p>
-                            <p style="margin: 8px 0; color: #333;"><strong>TVA (7%) :</strong> ${reservationDetails.montantTotalReservation * 0.07} DT</p>
-                            <p style="margin: 8px 0; color: #333;"><strong>Montant total de la réservation (TTC) :</strong> ${reservationDetails.montantTotalReservation} DT <span style="color: #d32f2f;">(Non remboursable)</span></p>
+                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des services (HT) :</strong> ${((reservationDetails.montantTotalServices * 0.93).toFixed(2)) || 0} DT</p>
+                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des chambres (HT) :</strong> ${((reservationDetails.montantTotalChambre * 0.93).toFixed(2)) || 0} DT</p>
+                            <p style="margin: 8px 0; color: #333;"><strong>TVA (7%) :</strong> ${(parseFloat(reservationDetails.montantTotalReservation || 0) - (((reservationDetails.montantTotalServices || 0) * 0.93) + ((reservationDetails.montantTotalChambre || 0) * 0.93))).toFixed(2)} DT</p>                            
+                            <p style="margin: 8px 0; color: #333;"><strong>Montant total de la réservation (TTC) :</strong> ${(reservationDetails.montantTotalReservation.toFixed(2))} DT <span style="color: #d32f2f;">(Non remboursable)</span></p>
                             <p style="margin: 8px 0; color: #333;"><strong>Mode de paiement :</strong> ${reservationDetails.modePaiement}</p>
                         </div>
                         <div style="margin-top: 25px;">
@@ -297,10 +297,10 @@ router.put('/:id',async(req,res)=>{
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total d'adultes :</strong> ${reservationDetails.nombreTotalAdulte || 0}</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total d'enfants :</strong> ${reservationDetails.nombreTotalEnfant || 0}</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total de bébés :</strong> ${reservationDetails.nombreTotalbebe || 0}</p>
-                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des services (HT) :</strong> ${reservationDetails.montantTotalServices * 0.93 || 0} DT</p>
-                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des chambres (HT) :</strong> ${reservationDetails.montantTotalChambre * 0.93 || 0} DT</p>
-                            <p style="margin: 8px 0; color: #333;"><strong>TVA (7%) :</strong> ${reservationDetails.montantTotalReservation * 0.07} DT</p>
-                            <p style="margin: 8px 0; color: #333;"><strong>Montant total de la réservation (TTC) :</strong> ${reservationDetails.montantTotalReservation} DT <span style="color: #d32f2f;">(Non remboursable)</span></p>
+                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des services (HT) :</strong> ${((reservationDetails.montantTotalServices * 0.93).toFixed(2)) || 0} DT</p>
+                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des chambres (HT) :</strong> ${((reservationDetails.montantTotalChambre * 0.93).toFixed(2)) || 0} DT</p>
+                            <p style="margin: 8px 0; color: #333;"><strong>TVA (7%) :</strong> ${(parseFloat(reservationDetails.montantTotalReservation || 0) - (((reservationDetails.montantTotalServices || 0) * 0.93) + ((reservationDetails.montantTotalChambre || 0) * 0.93))).toFixed(2)} DT</p>                            
+                            <p style="margin: 8px 0; color: #333;"><strong>Montant total de la réservation (TTC) :</strong> ${(reservationDetails.montantTotalReservation.toFixed(2))} DT <span style="color: #d32f2f;">(Non remboursable)</span></p>
                             <p style="margin: 8px 0; color: #333;"><strong>Mode de paiement :</strong> ${reservationDetails.modePaiement}</p>
                         </div>
                         <div style="margin-top: 25px;">

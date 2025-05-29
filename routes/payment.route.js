@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Stripe = require('stripe')('sk_test_51R1oQVHK3HkL6OFz7ULXDUVDVH0KBfhOum5CXbfb3KYxmTrRKa5iwqPKtskNTdhKhgo1PssHPbgb8n9dfwrGjVGD00HUdPe749');
 const Reservation = require('../models/reservation');
+const Information = require('../models/information');
+
 
 
 const normalizeDate = (date) => {
@@ -12,7 +14,9 @@ const normalizeDate = (date) => {
 
 
 router.post('/', async (req, res) => {
+  let hotelInfo;
   try {
+    hotelInfo = await Information.findOne().sort({ _id: -1 });
     if (!req.body.cart || !Array.isArray(req.body.cart) || req.body.cart.length === 0) {
       return res.status(400).json({ error: 'Cart is empty or invalid' });
     }
@@ -73,38 +77,79 @@ router.post('/', async (req, res) => {
         prixEnfant -= room.montantReductionNuit / 2;
         }
 
+        // Calculate room price (TVA-inclusive)
         const adultTotal = prixAdulte * nombreAdulte * nombreNuits;
         const enfantTotal = prixEnfant * nombreEnfant * nombreNuits;
-        const totalRoomPrice = adultTotal + enfantTotal;
+        const totalRoomPriceInclTVA = adultTotal + enfantTotal;
+
+        // Extract HTVA and TVA for room
+        const totalRoomPriceHT = totalRoomPriceInclTVA / 1.07;
+        const roomTVA = totalRoomPriceInclTVA - totalRoomPriceHT;
+
+        // Calculate service price (TVA-inclusive)
+        const totalServicePriceInclTVA = services.reduce((sum, service) => {
+          if (!service.nom || !service.prix || !service.quantite) {
+            throw new Error(`Invalid service: ${JSON.stringify(service)}`);
+          }
+          return sum + service.prix * service.quantite;
+        }, 0);
+
+
+         // Extract HTVA and TVA for services
+        const totalServicePriceHT = totalServicePriceInclTVA / 1.07;
+        const serviceTVA = totalServicePriceInclTVA - totalServicePriceHT;
+
+
+
 
         const roomLineItem = {
           price_data: {
             currency: 'usd',
             product_data: {
               name: `${nomcat} - ${nombreNuits} nuit${nombreNuits > 1 ? 's' : ''} (${nombreAdulte} adulte${nombreAdulte > 1 ? 's' : ''}${nombreEnfant > 0 ? `, ${nombreEnfant} enfant${nombreEnfant > 1 ? 's' : ''}` : ''}${litbebe > 0 ? `, ${litbebe} bébé${litbebe > 1 ? 's' : ''}` : ''})`,
+              description: `Montant total des chambres (TTC)`,
             },
-            unit_amount: Math.round(totalRoomPrice * 100 * 0.32), 
+            unit_amount: Math.round(totalRoomPriceHT * 100 * hotelInfo.tauxconv), 
           },
           quantity: 1,
         };
 
+        
+        // Service line items (HTVA)
         const serviceLineItems = services.map(service => {
-          if (!service.nom || !service.prix || !service.quantite) {
-            throw new Error(`Invalid service: ${JSON.stringify(service)}`);
-          }
+          const servicePriceInclTVA = service.prix;
+          const servicePriceHT = servicePriceInclTVA / 1.07;
           return {
             price_data: {
               currency: 'usd',
               product_data: {
                 name: `Service : ${service.nom}`,
               },
-              unit_amount: Math.round(service.prix * 100 * 0.32), 
+              unit_amount: Math.round(servicePriceHT * 100 * hotelInfo.tauxconv), 
             },
             quantity: service.quantite,
           };
         });
 
-        return [roomLineItem, ...serviceLineItems];
+
+
+         // TVA line item (7% for both room and services)
+        const totalTVA = roomTVA + serviceTVA;
+        const tvaLineItem = {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'TVA (<strong>7%</strong>)',
+            },
+            unit_amount: Math.round(totalTVA * 100 * hotelInfo.tauxconv), // Convert to USD cents
+          },
+          quantity: 1,
+        };
+
+        return [roomLineItem, ...serviceLineItems, tvaLineItem];
+
+
+
       }),
       success_url: `${process.env.CLIENT_URL}success?clientId=${req.body.clientId}`,
       cancel_url: `${process.env.CLIENT_URL}cancel`,

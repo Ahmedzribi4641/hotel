@@ -8,6 +8,7 @@ const informationSchema = new mongoose.Schema({
     description: { type: String, required: true },
     facebook: { type: String, default: '' },
     instagrame: { type: String, default: '' },
+    tauxconv: { type: Number, required: true },
 
 
 },);
