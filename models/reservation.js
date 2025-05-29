@@ -5,6 +5,11 @@ const Service=require('./service.js');
 
 const crypto = require("crypto"); // hetha el crypto bech nesta3mlo bech ngeneri bih el random reference w mayest7a9ech installation mawjoud fil node juste timportih wkhw
 
+// Helper function to round to two decimal places
+const roundToTwo = (num) => {
+    return Number((Math.round(num * 100) / 100).toFixed(2));
+};
+
 const reservationSchema=mongoose.Schema({
     reference:{ type: String, required: false },
     clientId:{type: mongoose.Schema.Types.ObjectId, ref: Personne ,required: true},
@@ -100,7 +105,7 @@ reservationSchema.pre('save', async function(next) {
          let montantserviceparchambre = 0; // bech te7seb el total des services pour chaque chambre w fi kol chambre yarja3 lel 0
         chambre.services.forEach(service => {
         if (!service.montantService || this.isModified(`services.${service._id}.quantite`)) {
-            service.montantService = service.quantite*service.serviceId.prix;
+            service.montantService = roundToTwo(service.quantite*service.serviceId.prix);
         }
         nombresServices += 1;  // n7otha normalement quantité 5ir fibeli 
         montantserviceparchambre+=service.montantService // prix les service pour une chambre
@@ -121,12 +126,12 @@ reservationSchema.pre('save', async function(next) {
         }
         const prixAdult=prixParNuit;
         const prixEnfant=prixParNuit*0.5;
-        chambre.montantChambre=chambre.nombreNuits*((prixAdult*chambre.nombreAdulte)+(prixEnfant*chambre.nombreEnfant)); // hetha montant chambre ma3neha ken el prix mte el lyeli ma8ir services
+        chambre.montantChambre=roundToTwo(chambre.nombreNuits*((prixAdult*chambre.nombreAdulte)+(prixEnfant*chambre.nombreEnfant))); // hetha montant chambre ma3neha ken el prix mte el lyeli ma8ir services
 
     }
 
-    chambre.montantServicesparchambre=montantserviceparchambre
-    chambre.totalchambre=montantserviceparchambre+chambre.montantChambre; // hethi te7sebli lel chambre el wa7da el montant mte3 el lyeli wel services mte3 chambre wa7da
+    chambre.montantServicesparchambre=roundToTwo(montantserviceparchambre);
+    chambre.totalchambre=roundToTwo(montantserviceparchambre+chambre.montantChambre); // hethi te7sebli lel chambre el wa7da el montant mte3 el lyeli wel services mte3 chambre wa7da
     nombresChambres += 1;
     totalChambres += chambre.montantChambre; // hethi yet7at fiha el total mte3 soum el lyeli ma8ir des services lel les chambres lkol
     totalServices += montantserviceparchambre; // w hetha montant les service lel reservation kemla
@@ -140,9 +145,9 @@ reservationSchema.pre('save', async function(next) {
     if (!this.nombreTotalChambres || this.isModified('chambres') || this.isModified('services')) {
         this.nombreTotalChambres = nombresChambres;
         this.nombreTotalServices = nombresServices;
-        this.montantTotalChambre = totalChambres
-        this.montantTotalServices = totalServices;
-        this.montantTotalReservation = totalChambres + totalServices;
+        this.montantTotalChambre = roundToTwo(totalChambres);
+        this.montantTotalServices = roundToTwo(totalServices);
+        this.montantTotalReservation = roundToTwo(totalChambres + totalServices);
         this.nombreTotalAdulte=nbradult;
         this.nombreTotalEnfant=nbrenfant;
         this.nombreTotalbebe=nbrbebe;
