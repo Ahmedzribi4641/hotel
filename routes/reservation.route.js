@@ -106,9 +106,9 @@ router.post('/', async (req, res) => {
                             `).join('')}
                         </ul>
                     ` : '<p style="margin: 5px 0; color: #333;"><strong>Services :</strong> Aucun</p>'}
-                    <p style="margin: 5px 0; color: #333;"><strong>Coût de la chambre :</strong> ${chambre.montantChambre } DT</p>
-                    <p style="margin: 5px 0; color: #333;"><strong>Coût des services :</strong> ${chambre.montantServicesparchambre || 0} DT</p>
-                    <p style="margin: 5px 0; color: #333;"><strong>Total de la chambre :</strong> ${chambre.totalchambre } DT</p>
+                    <p style="margin: 5px 0; color: #333;"><strong>Coût de la chambre (TTC) :</strong> ${chambre.montantChambre } DT</p>
+                    <p style="margin: 5px 0; color: #333;"><strong>Coût des services (TTC) :</strong> ${chambre.montantServicesparchambre || 0} DT</p>
+                    <p style="margin: 5px 0; color: #333;"><strong>Total de la chambre (TTC) :</strong> ${chambre.totalchambre } DT</p>
                 </div>
             `).join('');
 
@@ -130,9 +130,10 @@ router.post('/', async (req, res) => {
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total d'adultes :</strong> ${reservationDetails.nombreTotalAdulte || 0}</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total d'enfants :</strong> ${reservationDetails.nombreTotalEnfant || 0}</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total de bébés :</strong> ${reservationDetails.nombreTotalbebe || 0}</p>
-                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des services :</strong> ${reservationDetails.montantTotalServices || 0} DT</p>
-                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des chambres :</strong> ${reservationDetails.montantTotalChambre || 0} DT</p>
-                            <p style="margin: 8px 0; color: #333;"><strong>Montant total de la réservation :</strong> ${reservationDetails.montantTotalReservation} DT <span style="color: #d32f2f;">(Non remboursable)</span></p>
+                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des services (HT) :</strong> ${reservationDetails.montantTotalServices * 0.93 || 0} DT</p>
+                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des chambres (HT) :</strong> ${reservationDetails.montantTotalChambre * 0.93 || 0} DT</p>
+                            <p style="margin: 8px 0; color: #333;"><strong>TVA (7%) :</strong> ${reservationDetails.montantTotalReservation * 0.07} DT</p>
+                            <p style="margin: 8px 0; color: #333;"><strong>Montant total de la réservation (TTC) :</strong> ${reservationDetails.montantTotalReservation} DT <span style="color: #d32f2f;">(Non remboursable)</span></p>
                             <p style="margin: 8px 0; color: #333;"><strong>Mode de paiement :</strong> ${reservationDetails.modePaiement}</p>
                         </div>
                         <div style="margin-top: 25px;">
@@ -272,9 +273,9 @@ router.put('/:id',async(req,res)=>{
                             `).join('')}
                         </ul>
                     ` : '<p style="margin: 5px 0; color: #333;"><strong>Services :</strong> Aucun</p>'}
-                    <p style="margin: 5px 0; color: #333;"><strong>Coût de la chambre :</strong> ${chambre.montantChambre } DT</p>
-                    <p style="margin: 5px 0; color: #333;"><strong>Coût des services :</strong> ${chambre.montantServicesparchambre || 0} DT</p>
-                    <p style="margin: 5px 0; color: #333;"><strong>Total de la chambre :</strong> ${chambre.totalchambre } DT</p>
+                    <p style="margin: 5px 0; color: #333;"><strong>Coût de la chambre (TTC) :</strong> ${chambre.montantChambre } DT</p>
+                    <p style="margin: 5px 0; color: #333;"><strong>Coût des services (TTC) :</strong> ${chambre.montantServicesparchambre || 0} DT</p>
+                    <p style="margin: 5px 0; color: #333;"><strong>Total de la chambre (TTC) :</strong> ${chambre.totalchambre } DT</p>
                 </div>
             `).join('');
 
@@ -296,9 +297,10 @@ router.put('/:id',async(req,res)=>{
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total d'adultes :</strong> ${reservationDetails.nombreTotalAdulte || 0}</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total d'enfants :</strong> ${reservationDetails.nombreTotalEnfant || 0}</p>
                             <p style="margin: 8px 0; color: #333;"><strong>Nombre total de bébés :</strong> ${reservationDetails.nombreTotalbebe || 0}</p>
-                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des services :</strong> ${reservationDetails.montantTotalServices || 0} DT</p>
-                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des chambres :</strong> ${reservationDetails.montantTotalChambre || 0} DT</p>
-                            <p style="margin: 8px 0; color: #333;"><strong>Montant total de la réservation :</strong> ${reservationDetails.montantTotalReservation} DT <span style="color: #d32f2f;">(Non remboursable)</span></p>
+                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des services (HT) :</strong> ${reservationDetails.montantTotalServices * 0.93 || 0} DT</p>
+                            <p style="margin: 8px 0; color: #333;"><strong>Coût total des chambres (HT) :</strong> ${reservationDetails.montantTotalChambre * 0.93 || 0} DT</p>
+                            <p style="margin: 8px 0; color: #333;"><strong>TVA (7%) :</strong> ${reservationDetails.montantTotalReservation * 0.07} DT</p>
+                            <p style="margin: 8px 0; color: #333;"><strong>Montant total de la réservation (TTC) :</strong> ${reservationDetails.montantTotalReservation} DT <span style="color: #d32f2f;">(Non remboursable)</span></p>
                             <p style="margin: 8px 0; color: #333;"><strong>Mode de paiement :</strong> ${reservationDetails.modePaiement}</p>
                         </div>
                         <div style="margin-top: 25px;">
