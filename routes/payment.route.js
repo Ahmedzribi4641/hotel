@@ -109,7 +109,7 @@ router.post('/', async (req, res) => {
               name: `${nomcat} - ${nombreNuits} nuit${nombreNuits > 1 ? 's' : ''} (${nombreAdulte} adulte${nombreAdulte > 1 ? 's' : ''}${nombreEnfant > 0 ? `, ${nombreEnfant} enfant${nombreEnfant > 1 ? 's' : ''}` : ''}${litbebe > 0 ? `, ${litbebe} bébé${litbebe > 1 ? 's' : ''}` : ''})`,
               description: `Montant total des chambres (TTC)`,
             },
-            unit_amount: Math.round(totalRoomPriceHT * 100 * hotelInfo.tauxconv), 
+            unit_amount: Math.round((totalRoomPriceHT * 100) / hotelInfo.tauxconv), 
           },
           quantity: 1,
         };
@@ -125,7 +125,7 @@ router.post('/', async (req, res) => {
               product_data: {
                 name: `Service : ${service.nom}`,
               },
-              unit_amount: Math.round(servicePriceHT * 100 * hotelInfo.tauxconv), 
+              unit_amount: Math.round((servicePriceHT * 100) / hotelInfo.tauxconv), 
             },
             quantity: service.quantite,
           };
@@ -139,9 +139,9 @@ router.post('/', async (req, res) => {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: 'TVA (<strong>7%</strong>)',
+              name: 'TVA (7%)',
             },
-            unit_amount: Math.round(totalTVA * 100 * hotelInfo.tauxconv), // Convert to USD cents
+            unit_amount: Math.round((totalTVA * 100) / hotelInfo.tauxconv), // Convert to USD cents
           },
           quantity: 1,
         };
