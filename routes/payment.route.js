@@ -107,7 +107,7 @@ router.post('/', async (req, res) => {
             currency: 'usd',
             product_data: {
               name: `${nomcat} - ${nombreNuits} nuit${nombreNuits > 1 ? 's' : ''} (${nombreAdulte} adulte${nombreAdulte > 1 ? 's' : ''}${nombreEnfant > 0 ? `, ${nombreEnfant} enfant${nombreEnfant > 1 ? 's' : ''}` : ''}${litbebe > 0 ? `, ${litbebe} bébé${litbebe > 1 ? 's' : ''}` : ''})`,
-              description: `Montant total des chambres (HT)`,
+              description: `Montant total du chambre (HT)`,
             },
             unit_amount: Math.round((totalRoomPriceHT * 100) / hotelInfo.tauxconv), 
           },
