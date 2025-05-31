@@ -66,7 +66,7 @@ router.post('/register', async (req, res) => {
         await newpersonne.save()
 
 
-        if (newpersonne.email.includes("@gmail.com")) {  // bech mayab3ath email ken leli fihom @gmail.com ya3ni el clienet el s7a7 bil a7ra mouch eli yzid fihom el admin
+        if (!newpersonne.email.includes("@exemple.com")) {  // bech mayab3ath email ken leli fihom @gmail.com ya3ni el clienet el s7a7 bil a7ra mouch eli yzid fihom el admin
         // ba3then el email dactivation  // kona nejmo ma8ir mana3mlo fonction haka 3adi ya3ni kima el version le9dima fil projet ecommerce zouz kifkif 3adi
         const sendVerificationEmail = async (email, nom) => {
             let hotelInfo;
