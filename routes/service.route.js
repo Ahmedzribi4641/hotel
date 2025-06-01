@@ -110,7 +110,7 @@ router.post('/', async (req, res) => {
     const service=new Service(req.body)
     try{
             // Check for existing service with the same name
-    const existingService = await Service.findOne({ name: service.name });
+    const existingService = await Service.findOne({ nom: service.nom });
     if (existingService) {
       return res.status(400).json({ success: false, message: 'Un service avec ce nom existe déjà !' });
     }
