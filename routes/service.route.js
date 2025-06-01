@@ -129,30 +129,60 @@ router.post('/', async (req, res) => {
 
 
 //***************************************************************************** Modifier un service *********************************************
-router.put('/:id', async (req, res)=> {
-    try{
-        
-        // Check for existing service with the same name, excluding the current service
+// router.put('/:id', async (req, res)=> {
+//     try{
+
+//         // Check for existing service with the same name, excluding the current service
+//     const existingService = await Service.findOne({
+//       name: updates.name,
+//       _id: { $ne: serviceId },
+//     });
+//     if (existingService) {
+//       return res.status(400).json({ success: false, message: 'Un service avec ce nom existe déjà !' });
+//     }
+
+//         const service= await Service.findByIdAndUpdate(
+//             req.params.id,
+//             {$set:req.body},
+//             {new:true}
+
+//         );
+//         // await service.validate();       hethi juste itha t7eb tforci el verification des donneés recuperer ml req.body  ama zeyda 5ater fil front bech n7oto mayejem ken yab3ath des donner s7a7
+
+//     res.status(200).json(service)    
+//     }catch(error){
+//         res.status(400).json({message:error.message});
+//     }
+// });
+
+router.put('/:id', async (req, res) => {
+  try {
+    const serviceId = req.params.id;
+    const updates = req.body;
+
+    // Check for existing service with the same name, excluding the current service
     const existingService = await Service.findOne({
-      name: updates.name,
+      nom: updates.nom,
       _id: { $ne: serviceId },
     });
     if (existingService) {
       return res.status(400).json({ success: false, message: 'Un service avec ce nom existe déjà !' });
     }
 
-        const service= await Service.findByIdAndUpdate(
-            req.params.id,
-            {$set:req.body},
-            {new:true}
+    const service = await Service.findByIdAndUpdate(
+      serviceId,
+      { $set: updates },
+      { new: true }
+    );
 
-        );
-        // await service.validate();       hethi juste itha t7eb tforci el verification des donneés recuperer ml req.body  ama zeyda 5ater fil front bech n7oto mayejem ken yab3ath des donner s7a7
-
-    res.status(200).json(service)    
-    }catch(error){
-        res.status(400).json({message:error.message});
+    if (!service) {
+      return res.status(404).json({ success: false, message: 'Service non trouvé.' });
     }
+
+    res.status(200).json(service);
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
 });
 
 
