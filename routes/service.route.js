@@ -109,6 +109,11 @@ router.get('/sans/leservice/restauration', async (req, res) => {
 router.post('/', async (req, res) => {
     const service=new Service(req.body)
     try{
+            // Check for existing service with the same name
+    const existingService = await Service.findOne({ name: service.name });
+    if (existingService) {
+      return res.status(400).json({ success: false, message: 'Un service avec ce nom existe déjà !' });
+    }
         await service.save()
 
      // await personne.validate();       hethi juste itha t7eb tforci el verification des donneés recuperer ml req.body  ama zeyda 5ater fil front bech n7oto mayejem ken yab3ath des donner s7a7 w deja 7ata ma8irha hna ki tesna3 y9ollek eli les attribut
@@ -126,6 +131,16 @@ router.post('/', async (req, res) => {
 //***************************************************************************** Modifier un service *********************************************
 router.put('/:id', async (req, res)=> {
     try{
+        
+        // Check for existing service with the same name, excluding the current service
+    const existingService = await Service.findOne({
+      name: updates.name,
+      _id: { $ne: serviceId },
+    });
+    if (existingService) {
+      return res.status(400).json({ success: false, message: 'Un service avec ce nom existe déjà !' });
+    }
+
         const service= await Service.findByIdAndUpdate(
             req.params.id,
             {$set:req.body},
