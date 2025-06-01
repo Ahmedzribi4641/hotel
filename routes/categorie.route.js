@@ -31,15 +31,32 @@ router.get('/:id',async(req,res)=>{
 
 
 // ********************************************************************ajouter une categorie*************************************************
-router.post('/', async (req, res) => {
-    const newcategorie=new Categorie(req.body)
-    try{
-        await newcategorie.save()
-        res.status(200).json(newcategorie);
-    }catch(error){
-        res.status(400).json({message:error.message});
+// router.post('/', async (req, res) => {
+//     const newcategorie=new Categorie(req.body)
+//     try{
+//         await newcategorie.save()
+//         res.status(200).json(newcategorie);
+//     }catch(error){
+//         res.status(400).json({message:error.message});
 
+//     }
+// });
+
+router.post('/', async (req, res) => {
+  try {
+    const newcategorie = new Categorie(req.body);
+
+    // Check for existing category with the same nom
+    const existingCategorie = await Categorie.findOne({ nom: newcategorie.nom });
+    if (existingCategorie) {
+      return res.status(400).json({ success: false, message: 'Une catégorie avec ce nom existe déjà !' });
     }
+
+    await newcategorie.save();
+    res.status(200).json(newcategorie);
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
 });
 
 
@@ -47,20 +64,50 @@ router.post('/', async (req, res) => {
 
 
 // *******************************************************************modifier une categorie*************************************************
-router.put('/:id', async (req, res)=> {
-    try{
-        const categorie= await Categorie.findByIdAndUpdate(
-            req.params.id,
-            {$set:req.body},
-            {new:true}
+// router.put('/:id', async (req, res)=> {
+//     try{
+//         const categorie= await Categorie.findByIdAndUpdate(
+//             req.params.id,
+//             {$set:req.body},
+//             {new:true}
 
-        );
-        // await categorie.validate();       hethi juste itha t7eb tforci el verification des donneés recuperer ml req.body  ama zeyda 5ater fil front bech n7oto mayejem ken yab3ath des donner s7a7
+//         );
+//         // await categorie.validate();       hethi juste itha t7eb tforci el verification des donneés recuperer ml req.body  ama zeyda 5ater fil front bech n7oto mayejem ken yab3ath des donner s7a7
 
-    res.status(200).json(categorie)    
-    }catch(error){
-        res.status(400).json({message:error.message});
+//     res.status(200).json(categorie)    
+//     }catch(error){
+//         res.status(400).json({message:error.message});
+//     }
+// });
+
+router.put('/:id', async (req, res) => {
+  try {
+    const categorieId = req.params.id;
+    const updates = req.body;
+
+    // Check for existing category with the same nom, excluding the current category
+    const existingCategorie = await Categorie.findOne({
+      nom: updates.nom,
+      _id: { $ne: categorieId },
+    });
+    if (existingCategorie) {
+      return res.status(400).json({ success: false, message: 'Une catégorie avec ce nom existe déjà !' });
     }
+
+    const categorie = await Categorie.findByIdAndUpdate(
+      categorieId,
+      { $set: updates },
+      { new: true }
+    );
+
+    if (!categorie) {
+      return res.status(404).json({ success: false, message: 'Catégorie non trouvée.' });
+    }
+
+    res.status(200).json(categorie);
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
 });
 
 
