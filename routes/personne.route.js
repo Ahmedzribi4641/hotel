@@ -223,6 +223,26 @@ router.put('/:id', async (req, res) => {
         const oldEmail = personne.email; 
         const newEmail = req.body.email; 
 
+
+        // Check if the email already exists (for a different user)
+        if (newEmail && newEmail !== oldEmail) {
+            const personneExist = await Personne.findOne({ email: newEmail });
+            if (personneExist && personneExist._id.toString() !== req.params.id) {
+                return res.status(404).json({ message: 'personne already exists' });
+            }
+        }
+
+        // Check if the CIN already exists (for a different client)
+        if (req.body.clientDetails && req.body.clientDetails.cin && personne.role === 'client') {
+            const existingCin = await Personne.findOne({
+                'clientDetails.cin': req.body.clientDetails.cin,
+                _id: { $ne: req.params.id } // Exclude the current personne
+            });
+            if (existingCin) {
+                return res.status(400).json({ message: 'CIN already exists' });
+            }
+        }
+
         // Update the personne object with the new data
         Object.assign(personne, req.body);
 
