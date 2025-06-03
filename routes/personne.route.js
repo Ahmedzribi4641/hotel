@@ -200,18 +200,96 @@ router.get('/:id',async(req,res)=>{
 
 // *************************************************************************modifier une personne******************************************
 
-router.put('/:id',async(req,res)=>{
-    try{
-        const personne = await Personne.findById(req.params.id);
+// router.put('/:id',async(req,res)=>{
+//     try{
+//         const personne = await Personne.findById(req.params.id);
         
-        Object.assign(personne, req.body);                // behi hethi object.assign esta3melneha  5ater manejmouch na3mlo haka direct  (chambre=req.body)   donc el methode heki hiya eli tbadlelna objet b objet    wa7na fil put walina ne5dmo haka bil finbyid mouch bil findbyidandupdate bech ba3d nejmo na3mlo el .save bech el middleware ya9raha 5ater el findbyidandupdate mafihech . save donc ywali wa9tha el middle ware maye5demch heka 3leh lezem ne5dmo haka fil put mouch kima fil put mte3 el categorie mithel 5ater ma3andnech middle ware ya3ni 3adi 7ata ki mane5demch bil .save 
-        await personne.save()
-        res.status(200).json(personne)
+//         Object.assign(personne, req.body);                // behi hethi object.assign esta3melneha  5ater manejmouch na3mlo haka direct  (chambre=req.body)   donc el methode heki hiya eli tbadlelna objet b objet    wa7na fil put walina ne5dmo haka bil finbyid mouch bil findbyidandupdate bech ba3d nejmo na3mlo el .save bech el middleware ya9raha 5ater el findbyidandupdate mafihech . save donc ywali wa9tha el middle ware maye5demch heka 3leh lezem ne5dmo haka fil put mouch kima fil put mte3 el categorie mithel 5ater ma3andnech middle ware ya3ni 3adi 7ata ki mane5demch bil .save 
+//         await personne.save()
+//         res.status(200).json(personne)
 
-    }catch(error){
-        res.status(400).json({message:error.message})
+//     }catch(error){
+//         res.status(400).json({message:error.message})
+//     }
+// })
+
+
+
+router.put('/:id', async (req, res) => {
+    try {
+        const personne = await Personne.findById(req.params.id);
+
+
+        const oldEmail = personne.email; 
+        const newEmail = req.body.email; 
+
+        // Update the personne object with the new data
+        Object.assign(personne, req.body);
+
+        // If the email has changed and it's not an @exemple.com email, deactivate the account and send a new activation email
+        if (newEmail && newEmail !== oldEmail && !newEmail.includes("@exemple.com")) {
+            personne.isActive = false; // Deactivate the account
+
+            // Send verification email to the new email address
+            const sendVerificationEmail = async (email, nom) => {
+                let hotelInfo;
+                try {
+                    hotelInfo = await Information.findOne().sort({ _id: -1 }); // Get the latest document
+                } catch (error) {
+                    console.error('Error fetching hotel information:', error);
+                }
+
+                const mailOptions = {
+                    from: `${hotelInfo.nom}<${hotelInfo.email}>`,
+                    to: email,
+                    subject: "activer votre compte",
+                                    html: ` <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+              <div style="text-align: center; padding: 20px 0;">
+                <h1 style="color: #1a73e8; margin: 0;">${hotelInfo.nom}</h1>
+                <p style="color: #666; font-size: 16px;">Bienvenue dans notre communauté !</p>
+              </div>
+              <div style="padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+                <h2 style="color: #333; font-size: 24px;">Bonjour ${nom},</h2>
+                <p style="color: #333; font-size: 16px; line-height: 1.5;">
+                  Merci de vous être inscrit chez ${hotelInfo.nom} ! Pour activer votre compte et commencer à réserver, veuillez vérifier votre adresse e-mail en cliquant sur le bouton ci-dessous :
+                </p>
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="https://${req.headers.host}/api/personnes/status/edit?email=${email}" style="display: inline-block; padding: 12px 24px; background-color: #1a73e8; color: #fff; text-decoration: none; font-size: 16px; border-radius: 5px; font-weight: bold;">
+                    Activer mon compte
+                  </a>
+                </div>
+              </div>
+              <div style="text-align: center; padding: 20px 0; border-top: 1px solid #e0e0e0; margin-top: 20px;">
+                <p style="color: #666; font-size: 14px; margin: 0;">
+                  Besoin d'aide ? Contactez-nous à <a href="${hotelInfo.email}" style="color: #1a73e8; text-decoration: none;">${hotelInfo.email}</a>
+                </p>
+                <p style="color: #666; font-size: 14px; margin: 5px 0;">
+                  ${hotelInfo.nom}, ${hotelInfo.adresse}
+                </p>
+              </div>
+            </div>`,
+                };
+
+                try {
+                    await transporter.sendMail(mailOptions);
+                    console.log("E-mail de vérification envoyé à la nouvelle adresse !");
+                } catch (error) {
+                    console.error("Erreur lors de l'envoi de l'e-mail:", error);
+                }
+            };
+
+            // Send the verification email to the new email
+            await sendVerificationEmail(newEmail, personne.nom);
+        }
+
+        // Save the updated personne object
+        await personne.save();
+        res.status(200).json(personne);
+
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
-})
+});
 
 
 
